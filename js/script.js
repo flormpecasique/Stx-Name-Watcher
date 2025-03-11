@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (name) {
             clearResults();  // Limpiamos los resultados anteriores
-            fetch(`/api/hiro-proxy?name=${name}`)
+            const url = `https://api.hiro.so/v1/names/${name}`;  // Usamos la URL completa de la API
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
