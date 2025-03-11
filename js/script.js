@@ -19,18 +19,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        resultContainer.innerHTML = `Error: ${data.error}`;
+                        resultContainer.innerHTML = `
+                            <div class="bg-red-500 text-white p-4 rounded-lg">
+                                <strong>Error:</strong> ${data.error}. Please try again later.
+                            </div>`;
                     } else if (data.address) {
-                        resultContainer.innerHTML = `Name: ${name}<br>Address: ${data.address}<br>Status: ${data.status}`;
+                        resultContainer.innerHTML = `
+                            <div class="bg-green-500 text-white p-4 rounded-lg">
+                                <strong>Domain:</strong> ${name}<br>
+                                <strong>Address:</strong> ${data.address}<br>
+                                <strong>Status:</strong> ${data.status}<br>
+                                <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
+                            </div>`;
                     } else {
-                        resultContainer.innerHTML = 'No data found for this domain.';
+                        resultContainer.innerHTML = `
+                            <div class="bg-yellow-500 text-white p-4 rounded-lg">
+                                No data found for this domain. Make sure the domain is correctly entered or registered.
+                            </div>`;
                     }
                 })
                 .catch(error => {
-                    resultContainer.innerHTML = `Error fetching data: ${error}`;
+                    resultContainer.innerHTML = `
+                        <div class="bg-red-500 text-white p-4 rounded-lg">
+                            <strong>Error:</strong> ${error.message}. Please try again later.
+                        </div>`;
                 });
         } else {
-            resultContainer.innerHTML = 'Please enter a name.';
+            resultContainer.innerHTML = `
+                <div class="bg-yellow-500 text-white p-4 rounded-lg">
+                    Please enter a domain name to search.
+                </div>`;
         }
     });
 
