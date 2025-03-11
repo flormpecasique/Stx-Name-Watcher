@@ -1,36 +1,38 @@
-document.getElementById("searchButton").addEventListener("click", async () => {
-    const name = document.getElementById("searchInput").value.trim();
-    if (!name) return;
+document.getElementById("lookup-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    
+    const inputField = document.getElementById("name-input");
+    const name = inputField.value.trim();
+    const resultContainer = document.getElementById("result");
 
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = `<p class="text-gray-400">🔍 Searching...</p>`;
+    if (!name) {
+        resultContainer.innerHTML = "<p class='error'>⚠️ Please enter a name.</p>";
+        return;
+    }
+
+    resultContainer.innerHTML = "<p>⏳ Searching...</p>";
 
     try {
-        const response = await fetch(`https://api.hiro.so/bns/v1/names/${encodeURIComponent(name)}`, {
-            method: 'GET',
-            headers: {
-                'x-api-key': '12e037e5ffa36bafd45ff6b56424df8e', // Aquí va tu API key
-                'Accept': 'application/json'
-            }
-        });
+        const response = await fetch(`https://stx-name-watcher.vercel.app/api/hiro-proxy?name=${encodeURIComponent(name)}`);
 
         if (!response.ok) {
             throw new Error(`HTTP Error ${response.status}`);
         }
 
         const data = await response.json();
+        console.log(data); // Para depuración
 
-        // Revisamos si el dominio tiene una dirección asociada (es decir, si está tomado)
-        if (data.address) {
-            resultDiv.innerHTML = `
-                <p class="text-red-400">❌ <strong>${name}</strong> is already taken</p>
-                <p class="text-gray-300">Owned by: <span class="font-mono">${data.address}</span></p>
-            `;
-        } else {
-            resultDiv.innerHTML = `<p class="text-green-400">✅ <strong>${name}</strong> is available!</p>`;
+        if (data.error) {
+            throw new Error(data.error);
         }
+
+        // Muestra la información obtenida
+        resultContainer.innerHTML = `
+            <p><strong>Name:</strong> ${data.name || "N/A"}</p>
+            <p><strong>Owner Address:</strong> ${data.owner || "N/A"}</p>
+            <p><strong>Expires At:</strong> ${data.expiresAt || "N/A"}</p>
+        `;
     } catch (error) {
-        console.error("Error fetching data:", error);
-        resultDiv.innerHTML = `<p class="text-red-500">⚠️ Error: Unable to fetch data. Try a different name.</p>`;
+        resultContainer.innerHTML = `<p class='error'>⚠️ Error: ${error.message}</p>`;
     }
 });
