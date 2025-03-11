@@ -1,94 +1,160 @@
-/* Estilos generales */
-body {
-    background-color: #1a202c; /* Fondo oscuro */
-    color: white;
-    font-family: 'Inter', sans-serif;
+/* Estilo global */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-/* Contenedor principal */
+body {
+    background-color: #1A1A1A; /* Fondo oscuro */
+    color: #E0E0E0; /* Texto claro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 .container {
     width: 100%;
-    max-width: 600px; /* Máximo tamaño para que se vea bien en pantallas grandes */
-    margin: 0 auto;
+    max-width: 1200px;
     padding: 20px;
     text-align: center;
 }
 
-/* Encabezado */
-header {
-    margin-bottom: 20px;
-}
-
+/* Título */
 h1 {
-    font-size: 2.5rem;
-    margin: 0;
+    font-size: 36px;
     font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 10px;
 }
 
+/* Descripción */
 .description {
-    font-size: 1.125rem;
-    color: #cbd5e0;
-    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #B0B0B0;
+    margin-bottom: 30px;
 }
 
-/* Contenedor de la búsqueda */
+/* Estilos del formulario de búsqueda */
 .search-container {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
 }
 
-/* Estilo para la entrada de texto */
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #2d3748;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    outline: none;
+.search-container input {
+    padding: 10px 15px;
+    border: 2px solid #333333;
+    border-radius: 5px;
+    width: 300px;
+    margin-right: 10px;
+    background-color: #2C2C2C;
+    color: #E0E0E0;
+    font-size: 16px;
 }
 
-/* Botón de búsqueda */
-button {
-    padding: 10px 20px;
-    background-color: #3182ce;
-    color: white;
+.search-container input::placeholder {
+    color: #A0A0A0;
+}
+
+.search-container button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: #ffffff;
+    font-size: 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #2b6cb0;
+.search-container button:hover {
+    background-color: #0056b3;
 }
 
-/* Estilo para los resultados */
+/* Estilos del contenedor de resultados */
 #result {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     margin-top: 20px;
-    background-color: #2d3748;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: left;
-    width: 100%; /* Asegura que se alinee con el contenedor principal */
-    box-sizing: border-box; /* Para asegurarse de que el padding no cause desbordamientos */
 }
 
-/* Footer */
+/* Tarjetas de resultados */
+.result-card {
+    background-color: #2C2C2C;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+    color: #E0E0E0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bg-green-500 {
+    background-color: #4CAF50; /* Verde */
+}
+
+.bg-yellow-500 {
+    background-color: #FF9800; /* Naranja */
+}
+
+.result-card h2 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.result-card p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.result-card a {
+    color: #007BFF;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.result-card a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para el footer */
 footer {
     margin-top: 40px;
-    font-size: 0.875rem;
-    color: #cbd5e0;
+    font-size: 14px;
+    color: #A0A0A0;
     text-align: center;
+    padding: 10px;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .search-container input {
+        width: 250px;
+    }
+
+    .result-card h2 {
+        font-size: 20px;
+    }
+
+    .result-card p {
+        font-size: 14px;
+    }
 }
