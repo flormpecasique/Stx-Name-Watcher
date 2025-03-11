@@ -20,33 +20,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.error) {
                         resultContainer.innerHTML = `
-                            <div class="bg-red-500 text-white p-4 rounded-lg">
+                            <div class="result-card bg-red-500 text-white p-4 rounded-lg">
                                 <strong>Error:</strong> ${data.error}. Please try again later.
                             </div>`;
                     } else if (data.address) {
+                        // Si el dominio está ocupado
                         resultContainer.innerHTML = `
-                            <div class="bg-green-500 text-white p-4 rounded-lg">
+                            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Address:</strong> ${data.address}<br>
-                                <strong>Status:</strong> ${data.status}<br>
+                                <strong>Status:</strong> Occupied<br>
+                                <strong>Expiration Date:</strong> ${new Date(data.expire_block * 1000).toLocaleDateString()}<br>
                                 <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
                             </div>`;
                     } else {
+                        // Si el dominio está disponible
                         resultContainer.innerHTML = `
-                            <div class="bg-yellow-500 text-white p-4 rounded-lg">
-                                No data found for this domain. Make sure the domain is correctly entered or registered.
+                            <div class="result-card bg-green-500 text-white p-4 rounded-lg">
+                                <strong>Domain:</strong> ${name}<br>
+                                <strong>Status:</strong> Available<br>
+                                <strong>Register it:</strong> 
+                                <a href="https://www.stacks.id" target="_blank" class="underline text-blue-300">Stacks.id</a> or 
+                                <a href="https://bnsx.com" target="_blank" class="underline text-blue-300">BNSx</a>
                             </div>`;
                     }
                 })
                 .catch(error => {
                     resultContainer.innerHTML = `
-                        <div class="bg-red-500 text-white p-4 rounded-lg">
+                        <div class="result-card bg-red-500 text-white p-4 rounded-lg">
                             <strong>Error:</strong> ${error.message}. Please try again later.
                         </div>`;
                 });
         } else {
             resultContainer.innerHTML = `
-                <div class="bg-yellow-500 text-white p-4 rounded-lg">
+                <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                     Please enter a domain name to search.
                 </div>`;
         }
