@@ -1,4 +1,3 @@
-// Esperamos a que el documento esté completamente cargado
 document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
                             </div>`;
                     } else {
-                        // Si el dominio está disponible
+                        // Si el dominio está disponible (aquí estamos verificando si no tiene la propiedad "address")
                         resultContainer.innerHTML = `
                             <div class="result-card bg-green-500 text-white p-4 rounded-lg">
                                 <strong>Domain:</strong> ${name}<br>
