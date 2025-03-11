@@ -35,39 +35,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        // Hacemos una segunda llamada para obtener el timestamp de ese bloque
-                        fetch(`https://stacks-node-api.mainnet.stacks.co/v2/blocks/${expireBlock}`)
-                            .then(response => response.json())
-                            .then(blockData => {
-                                // Verificamos si se obtuvo correctamente el timestamp
-                                if (blockData.block && blockData.block.timestamp) {
-                                    // Convertimos el timestamp del bloque a una fecha legible
-                                    const expirationDate = new Date(blockData.block.timestamp * 1000).toLocaleDateString();
-                                    
-                                    const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
+                        const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
 
-                                    resultContainer.innerHTML = `
-                                        <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                                            <strong>Domain:</strong> ${name}<br>
-                                            <strong>Address:</strong> ${data.address}<br>
-                                            <strong>Status:</strong> Occupied<br>
-                                            <strong>Expiration Date:</strong> ${expirationDate}<br>
-                                            <strong>Last Transaction:</strong> ${transactionLink}<br>
-                                            <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
-                                        </div>`;
-                                } else {
-                                    resultContainer.innerHTML = `
-                                        <div class="result-card bg-red-500 text-white p-4 rounded-lg">
-                                            <strong>Error:</strong> Could not retrieve block data. Please try again later.
-                                        </div>`;
-                                }
-                            })
-                            .catch(error => {
-                                resultContainer.innerHTML = `
-                                    <div class="result-card bg-red-500 text-white p-4 rounded-lg">
-                                        <strong>Error fetching block data:</strong> ${error.message}. Please try again later.
-                                    </div>`;
-                            });
+                        resultContainer.innerHTML = `
+                            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
+                                <strong>Domain:</strong> ${name}<br>
+                                <strong>Address:</strong> ${data.address}<br>
+                                <strong>Status:</strong> Occupied<br>
+                                <strong>Expiration Block:</strong> ${expireBlock}<br>
+                                <strong>Last Transaction:</strong> ${transactionLink}<br>
+                                <strong>Note:</strong> Domains are registered for 5 years from the registration block. Renew after expiration block.
+                            </div>`;
                     } else {
                         // Si el dominio está disponible (aquí estamos verificando si no tiene la propiedad "address")
                         resultContainer.innerHTML = `
