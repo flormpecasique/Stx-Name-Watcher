@@ -6,7 +6,7 @@ Key Features:
 - Domain Details: Get detailed information on registered domains, including the associated address and expiration date.
 - Direct Links for Registration: Easily register available domains through trusted platforms like Stacks.id and BNSx.
 - Real-time Data: Powered by the Hiro API, offering up-to-date results.
-- 
+
 Why Use Stacks Name Watcher?
 
 Stacks Name Watcher is perfect for anyone interested in exploring the Stacks blockchain and acquiring a valuable .btc domain name. With a clean, user-friendly interface and precise data, you can make informed decisions about your next blockchain identity.
