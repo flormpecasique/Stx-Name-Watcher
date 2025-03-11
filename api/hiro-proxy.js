@@ -1,25 +1,30 @@
 export default async function handler(req, res) {
     const { name } = req.query;
-    
+
     if (!name) {
-        return res.status(400).json({ error: "No name provided" });
+        return res.status(400).json({ error: "Name parameter is required" });
     }
 
+    const url = `https://api.hiro.so/v1/names/${name}`;
+
     try {
-        const response = await fetch(`https://api.hiro.so/extended/v1/bns/names/${encodeURIComponent(name)}`, {
+        const response = await fetch(url, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${process.env.API_KEY}` // Usa la API Key de forma segura
+                'Authorization': `Bearer ${process.env.HIRO_API_KEY}`, // Si necesitas una API Key, usa la variable de entorno
+                'Content-Type': 'application/json'
             }
         });
 
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            throw new Error('Error fetching data');
         }
 
         const data = await response.json();
-        res.status(200).json(data);
+
+        return res.status(200).json(data);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ error: "Error fetching data" });
+        console.error(error);
+        return res.status(500).json({ error: 'Error fetching data. Try again later.' });
     }
 }
