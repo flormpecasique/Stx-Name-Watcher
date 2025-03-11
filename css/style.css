@@ -40,3 +40,9 @@ body {
 .text-center {
     text-align: center;
 }
+
+/* Prevents automatic capitalization of the first letter */
+#searchInput {
+    text-transform: none;
+}
+
