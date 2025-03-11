@@ -26,22 +26,39 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Si el dominio está ocupado
                         const expireBlock = data.expire_block;
 
+                        // Verificamos si expireBlock es un número válido
+                        if (isNaN(expireBlock)) {
+                            resultContainer.innerHTML = `
+                                <div class="result-card bg-red-500 text-white p-4 rounded-lg">
+                                    <strong>Error:</strong> Invalid block number. Please try again later.
+                                </div>`;
+                            return;
+                        }
+
                         // Hacemos una segunda llamada para obtener la fecha del bloque de expiración
                         fetch(`https://stacks-node-api.mainnet.stacks.co/v2/blocks/${expireBlock}`)
                             .then(response => response.json())
                             .then(blockData => {
-                                const expirationDate = new Date(blockData.block.timestamp * 1000).toLocaleDateString();
-                                const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
+                                // Verificamos si se obtuvo correctamente el timestamp
+                                if (blockData.block && blockData.block.timestamp) {
+                                    const expirationDate = new Date(blockData.block.timestamp * 1000).toLocaleDateString();
+                                    const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
 
-                                resultContainer.innerHTML = `
-                                    <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                                        <strong>Domain:</strong> ${name}<br>
-                                        <strong>Address:</strong> ${data.address}<br>
-                                        <strong>Status:</strong> Occupied<br>
-                                        <strong>Expiration Date:</strong> ${expirationDate}<br>
-                                        <strong>Last Transaction:</strong> ${transactionLink}<br>
-                                        <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
-                                    </div>`;
+                                    resultContainer.innerHTML = `
+                                        <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
+                                            <strong>Domain:</strong> ${name}<br>
+                                            <strong>Address:</strong> ${data.address}<br>
+                                            <strong>Status:</strong> Occupied<br>
+                                            <strong>Expiration Date:</strong> ${expirationDate}<br>
+                                            <strong>Last Transaction:</strong> ${transactionLink}<br>
+                                            <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
+                                        </div>`;
+                                } else {
+                                    resultContainer.innerHTML = `
+                                        <div class="result-card bg-red-500 text-white p-4 rounded-lg">
+                                            <strong>Error:</strong> Could not retrieve block data. Please try again later.
+                                        </div>`;
+                                }
                             })
                             .catch(error => {
                                 resultContainer.innerHTML = `
