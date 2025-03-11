@@ -1,38 +1,44 @@
-document.getElementById("lookup-form").addEventListener("submit", async function (event) {
-    event.preventDefault();
-    
-    const inputField = document.getElementById("name-input");
-    const name = inputField.value.trim();
-    const resultContainer = document.getElementById("result");
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const resultDiv = document.getElementById("result");
 
-    if (!name) {
-        resultContainer.innerHTML = "<p class='error'>⚠️ Please enter a name.</p>";
-        return;
+    async function fetchBNSData(name) {
+        try {
+            resultDiv.innerHTML = `<p class="text-gray-400">Searching...</p>`;
+
+            const response = await fetch(`/api/hiro-proxy?name=${encodeURIComponent(name)}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                    <p class="text-green-400 text-lg font-semibold">Domain: ${name}</p>
+                    <p class="text-gray-300">Owner Address: ${data.address || "Not found"}</p>
+                    <p class="text-gray-300">Blockchain: ${data.blockchain || "Not found"}</p>
+                    <p class="text-gray-300">Last Transaction ID: ${data.last_txid || "Not found"}</p>
+                    <p class="text-gray-300">Zonefile Hash: ${data.zonefile_hash || "Not found"}</p>
+                    <p class="text-gray-300">Zonefile: <a href="${data.zonefile || "#"}" class="text-blue-500" target="_blank">View Zonefile</a></p>
+                `;
+            } else {
+                throw new Error(data.error || "Unknown error");
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<p class="text-red-400">⚠️ Error: ${error.message}</p>`;
+        }
     }
 
-    resultContainer.innerHTML = "<p>⏳ Searching...</p>";
-
-    try {
-        const response = await fetch(`https://stx-name-watcher.vercel.app/api/hiro-proxy?name=${encodeURIComponent(name)}`);
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error ${response.status}`);
+    searchButton.addEventListener("click", function () {
+        const name = searchInput.value.trim();
+        if (name) {
+            fetchBNSData(name);
+        } else {
+            resultDiv.innerHTML = `<p class="text-red-400">⚠️ Please enter a .btc name</p>`;
         }
+    });
 
-        const data = await response.json();
-        console.log(data); // Para depuración
-
-        if (data.error) {
-            throw new Error(data.error);
+    searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            searchButton.click();
         }
-
-        // Muestra la información obtenida
-        resultContainer.innerHTML = `
-            <p><strong>Name:</strong> ${data.name || "N/A"}</p>
-            <p><strong>Owner Address:</strong> ${data.owner || "N/A"}</p>
-            <p><strong>Expires At:</strong> ${data.expiresAt || "N/A"}</p>
-        `;
-    } catch (error) {
-        resultContainer.innerHTML = `<p class='error'>⚠️ Error: ${error.message}</p>`;
-    }
+    });
 });
