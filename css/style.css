@@ -1,9 +1,42 @@
-/* Personalización extra */
-input {
-    border: 2px solid #333;
+/* style.css */
+body {
+    font-family: 'Helvetica Neue', sans-serif;
 }
 
-button {
-    font-weight: bold;
+#result {
+    background-color: #2D3748;  /* Fondo más oscuro para los resultados */
+    border-radius: 8px;
+    padding: 16px;
 }
 
+#result p {
+    margin-bottom: 12px;
+}
+
+#result a {
+    text-decoration: underline;
+}
+
+.text-red-400 {
+    color: #FC8181;
+}
+
+.text-green-400 {
+    color: #48BB78;
+}
+
+.text-gray-300 {
+    color: #E2E8F0;
+}
+
+.text-gray-400 {
+    color: #A0AEC0;
+}
+
+.text-lg {
+    font-size: 1.125rem; /* Tamaño adecuado para los títulos */
+}
+
+.text-center {
+    text-align: center;
+}
