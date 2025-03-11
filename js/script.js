@@ -24,7 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>`;
                     } else if (data.address) {
                         // Si el dominio está ocupado
-                        const expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
+                        let expirationDate = ''; // Inicializamos la variable
+                        if (data.expire_block) {
+                            // Solo mostramos la fecha si expire_block tiene un valor válido
+                            expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
+                        }
+
                         const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
 
                         resultContainer.innerHTML = `
@@ -32,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Address:</strong> ${data.address}<br>
                                 <strong>Status:</strong> Occupied<br>
-                                <strong>Expiration Date:</strong> ${expirationDate}<br>
+                                ${expirationDate ? `<strong>Expiration Date:</strong> ${expirationDate}<br>` : ''}
                                 <strong>Last Transaction:</strong> ${transactionLink}<br>
                                 <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
                             </div>`;
