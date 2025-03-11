@@ -1,44 +1,44 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
-    const resultDiv = document.getElementById("result");
+document.getElementById("searchButton").addEventListener("click", function() {
+    const nameInput = document.getElementById("searchInput").value.trim();
 
-    async function fetchBNSData(name) {
-        try {
-            resultDiv.innerHTML = `<p class="text-gray-400">Searching...</p>`;
-
-            const response = await fetch(`/api/hiro-proxy?name=${encodeURIComponent(name)}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                resultDiv.innerHTML = `
-                    <p class="text-green-400 text-lg font-semibold">Domain: ${name}</p>
-                    <p class="text-gray-300">Owner Address: ${data.address || "Not found"}</p>
-                    <p class="text-gray-300">Blockchain: ${data.blockchain || "Not found"}</p>
-                    <p class="text-gray-300">Last Transaction ID: ${data.last_txid || "Not found"}</p>
-                    <p class="text-gray-300">Zonefile Hash: ${data.zonefile_hash || "Not found"}</p>
-                    <p class="text-gray-300">Zonefile: <a href="${data.zonefile || "#"}" class="text-blue-500" target="_blank">View Zonefile</a></p>
-                `;
-            } else {
-                throw new Error(data.error || "Unknown error");
-            }
-        } catch (error) {
-            resultDiv.innerHTML = `<p class="text-red-400">⚠️ Error: ${error.message}</p>`;
-        }
+    if (nameInput === "") {
+        showResult("Please enter a .btc name.", "error");
+        return;
     }
 
-    searchButton.addEventListener("click", function () {
-        const name = searchInput.value.trim();
-        if (name) {
-            fetchBNSData(name);
-        } else {
-            resultDiv.innerHTML = `<p class="text-red-400">⚠️ Please enter a .btc name</p>`;
-        }
-    });
+    // Verificamos que el dominio tenga el formato correcto
+    const domainPattern = /^[a-zA-Z0-9-]+\.btc$/;
+    if (!domainPattern.test(nameInput)) {
+        showResult("Please enter a valid .btc name (e.g., flor.btc).", "error");
+        return;
+    }
 
-    searchInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            searchButton.click();
-        }
-    });
+    fetch(`/api/hiro-proxy?name=${encodeURIComponent(nameInput)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.address) {
+                // Si encontramos la dirección, mostramos los resultados
+                showResult(`
+                    <p class="text-green-400">Domain: ${nameInput}</p>
+                    <p class="text-gray-300">Address: ${data.address}</p>
+                    <p class="text-gray-300">Zonefile Hash: ${data.zonefile_hash}</p>
+                    <p class="text-gray-300">Expiration Block: ${data.expire_block}</p>
+                    <a href="https://explorer.stacks.co/address/${data.address}" target="_blank" class="text-blue-400">View on Stacks Explorer</a>
+                `);
+            } else {
+                showResult("No data found for this domain.", "error");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            showResult("Error fetching data. Try again later.", "error");
+        });
 });
+
+// Función para mostrar los resultados en la UI
+function showResult(message, type = "success") {
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = message;
+    resultDiv.classList.remove("text-gray-300", "text-red-400", "text-green-400");
+    resultDiv.classList.add(type === "error" ? "text-red-400" : "text-green-400");
+}
