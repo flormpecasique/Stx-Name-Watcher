@@ -24,13 +24,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>`;
                     } else if (data.address) {
                         // Si el dominio está ocupado
+                        const expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
+                        const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
+
                         resultContainer.innerHTML = `
                             <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Address:</strong> ${data.address}<br>
                                 <strong>Status:</strong> Occupied<br>
-                                <strong>Expiration Date:</strong> ${new Date(data.expire_block * 1000).toLocaleDateString()}<br>
-                                <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
+                                <strong>Expiration Date:</strong> ${expirationDate}<br>
+                                <strong>Last Transaction:</strong> ${transactionLink}<br>
+                                <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
                             </div>`;
                     } else {
                         // Si el dominio está disponible (aquí estamos verificando si no tiene la propiedad "address")
@@ -39,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Status:</strong> Available<br>
                                 <strong>Register it:</strong> 
-                                <a href="https://www.stacks.id" target="_blank" class="underline text-blue-300">Stacks.id</a> or 
-                                <a href="https://bnsx.com" target="_blank" class="underline text-blue-300">BNSx</a>
+                                <a href="https://bns.foundation" target="_blank" class="underline text-blue-300">BNS Foundation</a>
+                                <br><strong>Note:</strong> Domains are available for registration. Prices may vary.
                             </div>`;
                     }
                 })
