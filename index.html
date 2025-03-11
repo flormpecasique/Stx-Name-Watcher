@@ -6,19 +6,31 @@
     <title>Stacks Name Watcher</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos adicionales para asegurar la presentación adecuada */
+        /* Mejoras para la presentación en ordenadores */
         .result-container {
             max-width: 100%;
             overflow-wrap: break-word;
+        }
+        .description {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        .result-card {
+            margin: 20px 0;
+        }
+        @media (min-width: 768px) {
+            .description {
+                max-width: 60%;
+            }
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
     <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
     
-    <p class="text-center mb-4 text-lg text-gray-300">
+    <div class="description text-center mb-4 text-lg text-gray-300">
         This tool allows you to check the availability and details of .btc domains on the Stacks blockchain. Simply enter a BNS (Bitcoin Name System) domain below and press "Search" to see if it is registered.
-    </p>
+    </div>
 
     <div class="w-full max-w-md">
         <input type="text" id="searchInput" 
