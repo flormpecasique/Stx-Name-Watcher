@@ -41,7 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             .then(blockData => {
                                 // Verificamos si se obtuvo correctamente el timestamp
                                 if (blockData.block && blockData.block.timestamp) {
+                                    // Convertimos el timestamp del bloque a una fecha legible
                                     const expirationDate = new Date(blockData.block.timestamp * 1000).toLocaleDateString();
+                                    
                                     const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
 
                                     resultContainer.innerHTML = `
