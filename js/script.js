@@ -1,67 +1,51 @@
-// Esperamos a que el documento esté completamente cargado
 document.addEventListener('DOMContentLoaded', function () {
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
     const resultContainer = document.getElementById('result');
 
+    // Función para limpiar el resultado
+    function clearResults() {
+        resultContainer.innerHTML = '';
+    }
+
     // Agregamos un evento de clic al botón de búsqueda
     searchButton.addEventListener('click', function () {
-        let name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas y elimina espacios
-        
-        if (name) {
-            // Si el nombre no termina con ".btc", lo agregamos.
-            if (!name.endsWith('.btc')) {
-                name += '.btc';
-            }
+        const name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas
 
-            // Llamamos a la API de Hiro con el nombre ajustado
-            fetch(`https://api.hiro.so/v1/names/${name}`) // Usamos la API de Hiro
+        if (name) {
+            clearResults();  // Limpiamos los resultados anteriores
+            fetch(`/api/hiro-proxy?name=${name}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        resultContainer.innerHTML = `
-                            <div class="result-card bg-red-500 text-white p-4 rounded-lg">
-                                <strong>Error:</strong> ${data.error}. Please try again later.
-                            </div>`;
+                        resultContainer.innerHTML = `Error: ${data.error}`;
                     } else if (data.address) {
-                        // Si el dominio está ocupado
-                        let expirationDate = "Not available"; // Valor predeterminado en caso de que no haya fecha
-                        
-                        if (data.expire_block && data.expire_block > 0) {
-                            expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
-                        }
-
+                        // Si se encuentra el dominio
                         resultContainer.innerHTML = `
-                            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                                <strong>Domain:</strong> ${name}<br>
-                                <strong>Address:</strong> ${data.address}<br>
-                                <strong>Status:</strong> Occupied<br>
-                                <strong>Expiration Date:</strong> ${expirationDate}<br>
-                                <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
-                            </div>`;
+                            <div class="result-card bg-green-500">
+                                <h2>Domain: ${name}</h2>
+                                <p>Address: ${data.address}</p>
+                                <p>Status: ${data.status}</p>
+                                <p>Expiration: ${data.expiration || 'N/A'}</p>
+                            </div>
+                        `;
                     } else {
-                        // Si el dominio está disponible
+                        // Si no se encuentra el dominio
                         resultContainer.innerHTML = `
-                            <div class="result-card bg-green-500 text-white p-4 rounded-lg">
-                                <strong>Domain:</strong> ${name}<br>
-                                <strong>Status:</strong> Available<br>
-                                <strong>Register it:</strong> 
-                                <a href="https://www.stacks.id" target="_blank" class="underline text-blue-300">Stacks.id</a> or 
-                                <a href="https://bnsx.com" target="_blank" class="underline text-blue-300">BNSx</a>
-                            </div>`;
+                            <div class="result-card bg-yellow-500">
+                                <h2>${name} is Available!</h2>
+                                <p>Click below to register:</p>
+                                <a href="https://stacks.id" target="_blank">Register at Stacks.id</a><br>
+                                <a href="https://bnsx.com" target="_blank">Register at BNSx</a>
+                            </div>
+                        `;
                     }
                 })
                 .catch(error => {
-                    resultContainer.innerHTML = `
-                        <div class="result-card bg-red-500 text-white p-4 rounded-lg">
-                            <strong>Error:</strong> ${error.message}. Please try again later.
-                        </div>`;
+                    resultContainer.innerHTML = `Error fetching data: ${error}`;
                 });
         } else {
-            resultContainer.innerHTML = `
-                <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                    Please enter a domain name to search.
-                </div>`;
+            resultContainer.innerHTML = 'Please enter a name.';
         }
     });
 
