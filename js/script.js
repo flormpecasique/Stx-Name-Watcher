@@ -25,12 +25,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>`;
                     } else if (data.address) {
                         // Si el dominio está ocupado
+                        let expirationDate = "Not available"; // Valor predeterminado en caso de que no haya fecha
+                        
+                        if (data.expire_block && data.expire_block > 0) {
+                            expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
+                        }
+
                         resultContainer.innerHTML = `
                             <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Address:</strong> ${data.address}<br>
                                 <strong>Status:</strong> Occupied<br>
-                                <strong>Expiration Date:</strong> ${new Date(data.expire_block * 1000).toLocaleDateString()}<br>
+                                <strong>Expiration Date:</strong> ${expirationDate}<br>
                                 <strong>Last Transaction:</strong> ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
                             </div>`;
                     } else {
