@@ -5,22 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stacks Name Watcher</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos adicionales para asegurar la presentación adecuada */
+        .result-container {
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
-    <h1 class="text-3xl font-bold mb-4">Stacks Name Watcher</h1>
+    <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
     
+    <p class="text-center mb-4 text-lg text-gray-300">
+        This tool allows you to check the availability and details of .btc domains on the Stacks blockchain. Simply enter a BNS (Bitcoin Name System) domain below and press "Search" to see if it is registered.
+    </p>
+
     <div class="w-full max-w-md">
         <input type="text" id="searchInput" 
                class="w-full p-3 text-black rounded-lg focus:outline-none" 
-               placeholder="Enter .btc name">
+               placeholder="Enter a .btc name">
         <button id="searchButton" 
                 class="w-full p-3 mt-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition">
             Search
         </button>
     </div>
 
-    <div id="result" class="mt-4 w-full max-w-md p-4 text-center"></div>
+    <div id="result" class="result-container mt-4 w-full max-w-md p-4 text-center bg-gray-800 rounded-lg shadow-lg"></div>
 
     <script src="js/script.js"></script>
 </body>
