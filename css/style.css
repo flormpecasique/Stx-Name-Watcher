@@ -1,151 +1,119 @@
-* {
+/* Estilos básicos del body */
+body {
+    background-color: #1A202C; /* Fondo oscuro */
+    color: #FFFFFF; /* Texto en blanco */
+    font-family: 'Arial', sans-serif; /* Fuente limpia y moderna */
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Título principal */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+/* Estilo para el contenedor del input y el botón */
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 20px;
+    text-align: center;
+}
+
+/* Input de búsqueda */
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    color: #000;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-}
-
-.container {
-    width: 90%;
-    max-width: 800px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #333;
-}
-
-.description {
-    font-size: 1rem;
-    color: #666;
-    margin-top: 0.5rem;
-    font-weight: 400;
-}
-
-.search-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-#searchInput {
-    width: 75%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-#searchButton {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-#searchButton:hover {
-    background-color: #45a049;
-}
-
-#result {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.result-card {
-    background-color: #fff;
-    color: #333;
+/* Estilo del botón de búsqueda */
+button {
     width: 100%;
     padding: 15px;
+    font-size: 1.125rem;
+    background-color: #3182CE; /* Azul */
+    color: #FFFFFF;
+    border: none;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto hover para el botón */
+button:hover {
+    background-color: #2B6CB0; /* Azul oscuro */
+}
+
+/* Estilo del contenedor de resultados */
+#result {
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
     text-align: center;
+    background-color: #2D3748; /* Fondo gris oscuro para los resultados */
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.bg-green-500 {
-    background-color: #4CAF50;
+/* Estilo de la información en los resultados */
+.result-item {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #E2E8F0; /* Color gris claro para el texto */
 }
 
-.bg-yellow-500 {
-    background-color: #FFEB3B;
-}
-
-.bg-red-500 {
-    background-color: #F44336;
-}
-
-a {
-    color: #1E88E5;
+/* Enlaces de registro para nombres disponibles */
+.available-link {
+    color: #3182CE;
     text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-a:hover {
+.available-link:hover {
     text-decoration: underline;
 }
 
-footer {
-    background-color: #f5f5f5;
-    text-align: center;
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    color: #aaa;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-}
-
-footer p {
-    margin: 0;
-}
-
+/* Estilos para dispositivos móviles */
 @media (max-width: 768px) {
-    .search-container {
-        flex-direction: column;
-        align-items: stretch;
+    h1 {
+        font-size: 2rem; /* Reducir tamaño de texto en móvil */
     }
 
-    #searchInput {
-        width: 100%;
-        margin-bottom: 10px;
+    input[type="text"], button {
+        font-size: 1rem; /* Ajuste de tamaño de fuente */
     }
 
-    #searchButton {
-        width: 100%;
+    #result {
+        padding: 15px;
     }
+}
+
+/* Estilos para el footer (sutil y pequeño) */
+footer {
+    position: absolute;
+    bottom: 10px;
+    font-size: 0.75rem;
+    color: #E2E8F0;
+    text-align: center;
+    width: 100%;
 }
