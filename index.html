@@ -25,30 +25,28 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-between min-h-screen p-4">
-
-    <div class="flex-grow">
-        <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
-
-        <div class="description text-center mb-4 text-lg text-gray-300">
-            This tool allows you to check the availability and details of .btc domains on the Stacks blockchain. Simply enter a BNS (Bitcoin Name System) domain below and press "Search" to see if it is registered.
-        </div>
-
-        <div class="w-full max-w-md">
-            <input type="text" id="searchInput" 
-                   class="w-full p-3 text-black rounded-lg focus:outline-none" 
-                   placeholder="Enter a .btc name">
-            <button id="searchButton" 
-                    class="w-full p-3 mt-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition">
-                Search
-            </button>
-        </div>
-
-        <div id="result" class="result-container mt-4 w-full max-w-md p-4 text-center bg-gray-800 rounded-lg shadow-lg"></div>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
+    
+    <div class="description text-center mb-4 text-lg text-gray-300">
+        This tool allows you to check the availability and details of .btc domains on the Stacks blockchain. Simply enter a BNS (Bitcoin Name System) domain below and press "Search" to see if it is registered.
     </div>
 
-    <footer class="text-center text-sm text-gray-400 py-4">
-        <p>&copy; 2025 Stacks Name Watcher | All rights reserved</p>
+    <div class="w-full max-w-md">
+        <input type="text" id="searchInput" 
+               class="w-full p-3 text-black rounded-lg focus:outline-none" 
+               placeholder="Enter a .btc name">
+        <button id="searchButton" 
+                class="w-full p-3 mt-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition">
+            Search
+        </button>
+    </div>
+
+    <div id="result" class="result-container mt-4 w-full max-w-md p-4 text-center bg-gray-800 rounded-lg shadow-lg"></div>
+
+    <!-- Footer -->
+    <footer class="w-full bg-gray-800 text-center text-gray-400 py-4 mt-8">
+        <p>&copy; 2025 Stacks Name Watcher. All rights reserved.</p>
     </footer>
 
     <script src="js/script.js"></script>
