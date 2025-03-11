@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        // Hacemos una segunda llamada para obtener la fecha del bloque de expiración
+                        // Hacemos una segunda llamada para obtener el timestamp de ese bloque
                         fetch(`https://stacks-node-api.mainnet.stacks.co/v2/blocks/${expireBlock}`)
                             .then(response => response.json())
                             .then(blockData => {
