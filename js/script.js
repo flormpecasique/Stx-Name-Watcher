@@ -24,17 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>`;
                     } else if (data.address) {
                         // Si el dominio está ocupado
-                        const expireBlock = data.expire_block;
-
-                        // Verificamos si expireBlock es un número válido
-                        if (isNaN(expireBlock)) {
-                            resultContainer.innerHTML = `
-                                <div class="result-card bg-red-500 text-white p-4 rounded-lg">
-                                    <strong>Error:</strong> Invalid block number. Please try again later.
-                                </div>`;
-                            return;
-                        }
-
+                        const expirationDate = new Date(data.expire_block * 1000).toLocaleDateString();
                         const transactionLink = data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available';
 
                         resultContainer.innerHTML = `
@@ -42,12 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>Domain:</strong> ${name}<br>
                                 <strong>Address:</strong> ${data.address}<br>
                                 <strong>Status:</strong> Occupied<br>
-                                <strong>Expiration Block:</strong> ${expireBlock}<br>
+                                <strong>Expiration Date:</strong> ${expirationDate}<br>
                                 <strong>Last Transaction:</strong> ${transactionLink}<br>
-                                <strong>Note:</strong> Domains are registered for 5 years from the registration block. Renew after expiration block.
+                                <strong>Note:</strong> Domains are registered for 5 years from the registration date. Renew after expiration.
                             </div>`;
                     } else {
-                        // Si el dominio está disponible (aquí estamos verificando si no tiene la propiedad "address")
+                        // Si el dominio está disponible (cuando el campo "address" está vacío)
                         resultContainer.innerHTML = `
                             <div class="result-card bg-green-500 text-white p-4 rounded-lg">
                                 <strong>Domain:</strong> ${name}<br>
