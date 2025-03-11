@@ -1,44 +1,38 @@
-document.getElementById("searchButton").addEventListener("click", function() {
-    const nameInput = document.getElementById("searchInput").value.trim();
+// Esperamos a que el documento esté completamente cargado
+document.addEventListener('DOMContentLoaded', function () {
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+    const resultContainer = document.getElementById('result');
 
-    if (nameInput === "") {
-        showResult("Please enter a .btc name.", "error");
-        return;
-    }
+    // Agregamos un evento de clic al botón de búsqueda
+    searchButton.addEventListener('click', function () {
+        const name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas y elimina espacios
 
-    // Verificamos que el dominio tenga el formato correcto
-    const domainPattern = /^[a-zA-Z0-9-]+\.btc$/;
-    if (!domainPattern.test(nameInput)) {
-        showResult("Please enter a valid .btc name (e.g., flor.btc).", "error");
-        return;
-    }
+        if (name) {
+            fetch(`/api/hiro-proxy?name=${name}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultContainer.innerHTML = `Error: ${data.error}`;
+                    } else if (data.address) {
+                        resultContainer.innerHTML = `Name: ${name}<br>Address: ${data.address}<br>Status: ${data.status}`;
+                    } else {
+                        resultContainer.innerHTML = 'No data found for this domain.';
+                    }
+                })
+                .catch(error => {
+                    resultContainer.innerHTML = `Error fetching data: ${error}`;
+                });
+        } else {
+            resultContainer.innerHTML = 'Please enter a name.';
+        }
+    });
 
-    fetch(`/api/hiro-proxy?name=${encodeURIComponent(nameInput)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.address) {
-                // Si encontramos la dirección, mostramos los resultados
-                showResult(`
-                    <p class="text-green-400">Domain: ${nameInput}</p>
-                    <p class="text-gray-300">Address: ${data.address}</p>
-                    <p class="text-gray-300">Zonefile Hash: ${data.zonefile_hash}</p>
-                    <p class="text-gray-300">Expiration Block: ${data.expire_block}</p>
-                    <a href="https://explorer.stacks.co/address/${data.address}" target="_blank" class="text-blue-400">View on Stacks Explorer</a>
-                `);
-            } else {
-                showResult("No data found for this domain.", "error");
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            showResult("Error fetching data. Try again later.", "error");
-        });
+    // También agregamos la funcionalidad para presionar Enter y realizar la búsqueda
+    searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            searchButton.click();
+        }
+    });
 });
 
-// Función para mostrar los resultados en la UI
-function showResult(message, type = "success") {
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = message;
-    resultDiv.classList.remove("text-gray-300", "text-red-400", "text-green-400");
-    resultDiv.classList.add(type === "error" ? "text-red-400" : "text-green-400");
-}
