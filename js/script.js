@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas y elimina espacios
 
         if (name) {
-            fetch(`/api/hiro-proxy?name=${name}`)
+            // Asegurándonos de que la API se llama correctamente.
+            fetch(`https://api.hiro.so/v1/names/${name}.btc`) // Llamamos a la API de Hiro
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
@@ -35,4 +36,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
