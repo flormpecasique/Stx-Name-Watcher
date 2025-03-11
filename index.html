@@ -11,39 +11,68 @@
             max-width: 100%;
             overflow-wrap: break-word;
         }
+
+        /* Estilo de la descripción */
         .description {
             max-width: 90%;
-            margin: 0 auto;
-            font-size: 0.8rem; /* Texto más pequeño */
+            margin: 0 auto 20px auto; /* Espacio en la parte inferior */
+            font-size: 0.9rem; /* Texto más pequeño por defecto */
+            line-height: 1.5; /* Mejora la legibilidad */
+            text-align: center; /* Alinea el texto al centro */
         }
-        .result-card {
-            margin: 20px 0;
-        }
-        @media (min-width: 768px) {
-            .description {
-                max-width: 60%;
-                font-size: 1rem; /* Texto un poco más grande en pantallas más grandes */
-            }
-        }
+
+        /* Estilo para el título */
         h1 {
             font-size: 3.5rem; /* Título más grande */
+            text-align: center;
+            margin-bottom: 2rem; /* Espaciado debajo del título */
+        }
+
+        /* Estilo para los botones y el input */
+        input, button {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            border-radius: 0.375rem;
+        }
+
+        /* Espaciado entre los elementos */
+        .w-full {
+            width: 100%;
+        }
+
+        /* Para dispositivos de mayor tamaño */
+        @media (min-width: 768px) {
+            .description {
+                max-width: 60%; /* Mantener la descripción más estrecha en pantallas grandes */
+                font-size: 1rem; /* Texto un poco más grande en pantallas más grandes */
+            }
+
+            h1 {
+                font-size: 4rem; /* Aumentar tamaño del título en pantallas grandes */
+            }
+        }
+
+        /* Estilo para el footer */
+        footer {
+            background-color: #1F2937; /* Fondo oscuro en el footer */
+            color: #D1D5DB; /* Color de texto gris claro */
+            padding: 2rem; /* Espaciado adecuado en el footer */
+            margin-top: 3rem; /* Espaciado arriba del footer */
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
-    <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
-    
-    <div class="description text-center mb-4 text-lg text-gray-300">
-    Check the availability and details of .btc domains on the Stacks blockchain. Enter a BNS domain below and hit 'Search' to see if it’s registered.
-</div>
 
+    <h1 class="text-3xl font-bold mb-4 text-center">Stacks Name Watcher</h1>
+
+    <div class="description text-center mb-4 text-lg text-gray-300">
+        Check the availability and details of .btc domains on the Stacks blockchain. Enter a BNS domain below and hit 'Search' to see if it’s registered.
+    </div>
 
     <div class="w-full max-w-md">
-        <input type="text" id="searchInput" 
-               class="w-full p-3 text-black rounded-lg focus:outline-none" 
-               placeholder="Enter a .btc name">
-        <button id="searchButton" 
-                class="w-full p-3 mt-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition">
+        <input type="text" id="searchInput" class="w-full p-3 text-black rounded-lg focus:outline-none" placeholder="Enter a .btc name">
+        <button id="searchButton" class="w-full p-3 mt-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition">
             Search
         </button>
     </div>
@@ -52,9 +81,8 @@
 
     <!-- Footer -->
     <footer class="w-full text-center text-gray-400 py-4 mt-8">
-    <p>&copy; 2025 Stacks Name Watcher by flor.btc | All rights reserved.</p>
-</footer>
-
+        <p>&copy; 2025 Stacks Name Watcher by flor.btc | All rights reserved.</p>
+    </footer>
 
     <script src="js/script.js"></script>
 </body>
