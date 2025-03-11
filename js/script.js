@@ -6,11 +6,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Agregamos un evento de clic al botón de búsqueda
     searchButton.addEventListener('click', function () {
-        const name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas y elimina espacios
-
+        let name = searchInput.value.trim().toLowerCase(); // Asegura que se usa en minúsculas y elimina espacios
+        
         if (name) {
-            // Asegurándonos de que la API se llama correctamente.
-            fetch(`https://api.hiro.so/v1/names/${name}.btc`) // Llamamos a la API de Hiro
+            // Si el nombre no termina con ".btc", lo agregamos.
+            if (!name.endsWith('.btc')) {
+                name += '.btc';
+            }
+
+            // Llamamos a la API de Hiro con el nombre ajustado
+            fetch(`https://api.hiro.so/v1/names/${name}`) // Usamos la API de Hiro
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
