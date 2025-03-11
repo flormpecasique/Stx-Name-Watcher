@@ -1,119 +1,94 @@
-/* Estilos básicos del body */
+/* Estilos generales */
 body {
-    background-color: #1A202C; /* Fondo oscuro */
-    color: #FFFFFF; /* Texto en blanco */
-    font-family: 'Arial', sans-serif; /* Fuente limpia y moderna */
+    background-color: #1a202c; /* Fondo oscuro */
+    color: white;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
 }
 
-/* Título principal */
-h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #FFFFFF;
-}
-
-/* Estilo para el contenedor del input y el botón */
+/* Contenedor principal */
 .container {
     width: 100%;
-    max-width: 500px;
-    padding: 0 20px;
+    max-width: 600px; /* Máximo tamaño para que se vea bien en pantallas grandes */
+    margin: 0 auto;
+    padding: 20px;
     text-align: center;
 }
 
-/* Input de búsqueda */
-input[type="text"] {
-    width: 100%;
-    padding: 15px;
-    font-size: 1rem;
-    color: #000;
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-    box-sizing: border-box;
+/* Encabezado */
+header {
+    margin-bottom: 20px;
 }
 
-/* Estilo del botón de búsqueda */
-button {
-    width: 100%;
-    padding: 15px;
+h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.description {
     font-size: 1.125rem;
-    background-color: #3182CE; /* Azul */
-    color: #FFFFFF;
+    color: #cbd5e0;
+    margin-top: 10px;
+}
+
+/* Contenedor de la búsqueda */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Estilo para la entrada de texto */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #2d3748;
+    color: white;
     border: none;
     border-radius: 8px;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+/* Botón de búsqueda */
+button {
+    padding: 10px 20px;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-/* Efecto hover para el botón */
 button:hover {
-    background-color: #2B6CB0; /* Azul oscuro */
+    background-color: #2b6cb0;
 }
 
-/* Estilo del contenedor de resultados */
+/* Estilo para los resultados */
 #result {
-    margin-top: 1.5rem;
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    text-align: center;
-    background-color: #2D3748; /* Fondo gris oscuro para los resultados */
+    margin-top: 20px;
+    background-color: #2d3748;
+    padding: 15px;
     border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: left;
+    width: 100%; /* Asegura que se alinee con el contenedor principal */
+    box-sizing: border-box; /* Para asegurarse de que el padding no cause desbordamientos */
 }
 
-/* Estilo de la información en los resultados */
-.result-item {
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #E2E8F0; /* Color gris claro para el texto */
-}
-
-/* Enlaces de registro para nombres disponibles */
-.available-link {
-    color: #3182CE;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.available-link:hover {
-    text-decoration: underline;
-}
-
-/* Estilos para dispositivos móviles */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2rem; /* Reducir tamaño de texto en móvil */
-    }
-
-    input[type="text"], button {
-        font-size: 1rem; /* Ajuste de tamaño de fuente */
-    }
-
-    #result {
-        padding: 15px;
-    }
-}
-
-/* Estilos para el footer (sutil y pequeño) */
+/* Footer */
 footer {
-    position: absolute;
-    bottom: 10px;
-    font-size: 0.75rem;
-    color: #E2E8F0;
+    margin-top: 40px;
+    font-size: 0.875rem;
+    color: #cbd5e0;
     text-align: center;
-    width: 100%;
 }
