@@ -31,15 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 const expireBlock = data.expire_block;
+                const address = data.address; // Dirección Stacks asociada
 
-                // Obtener el bloque actual y calcular fecha estimada de expiración
                 fetch('https://api.hiro.so/v2/info')
                     .then(response => response.json())
                     .then(info => {
                         const currentBlock = info.stacks_tip_height;
                         const blocksRemaining = expireBlock - currentBlock;
 
-                        // Obtener el tiempo promedio entre bloques (últimos 5 bloques)
                         fetch('https://api.hiro.so/v2/blocks?limit=5')
                             .then(response => response.json())
                             .then(blockData => {
@@ -62,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 resultContainer.innerHTML = `
                                     <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                                         <strong>Domain:</strong> ${name}<br>
-                                        <strong>Address:</strong> ${data.address}<br>
+                                        <strong>Address:</strong> ${address}<br>
                                         <strong>Status:</strong> Occupied<br>
                                         <strong>Expiration Block:</strong> ${expireBlock}<br>
-                                        <strong>Estimated Expiration Date:</strong> ${formattedDate} UTC<br>
+                                        <strong>Exact Expiration Date:</strong> ${formattedDate} UTC<br>
                                         <strong>Last Transaction:</strong> ${transactionLink}
                                     </div>`;
                             })
