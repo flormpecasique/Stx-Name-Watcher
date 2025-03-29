@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     resultContainer.innerHTML = `
                         <div class="result-card bg-green-500 text-white p-4 rounded-lg">
                             <strong>Domain:</strong> ${name}<br>
-                            <strong>Status:</strong> Available<br>
-                            <strong>Register it:</strong> 
+                            <strong>Status:</strong> Available for registration<br>
+                            <strong>Register it here:</strong> 
                             <a href="https://bns.foundation" target="_blank" class="underline text-blue-300">BNS Foundation</a>
                         </div>`;
                     return;
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 const expireBlock = data.expire_block;
-                const address = data.address; // Dirección Stacks asociada
+                const address = data.address;  
 
                 fetch('https://api.hiro.so/v2/info')
                     .then(response => response.json())
@@ -39,17 +39,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         const currentBlock = info.stacks_tip_height;
                         const blocksRemaining = expireBlock - currentBlock;
 
-                        fetch('https://api.hiro.so/v2/blocks?limit=5')
+                        fetch('https://api.hiro.so/v2/blocks?limit=10')
                             .then(response => response.json())
                             .then(blockData => {
+                                if (!blockData.results || blockData.results.length < 2) {
+                                    resultContainer.innerHTML = `<div class="result-card bg-orange-500 text-white p-4 rounded-lg">
+                                        <strong>Warning:</strong> Could not fetch block data.<br>
+                                        <strong>Expiration Block:</strong> ${expireBlock}
+                                    </div>`;
+                                    return;
+                                }
+
                                 let totalTime = 0;
                                 for (let i = 1; i < blockData.results.length; i++) {
                                     const prevTime = new Date(blockData.results[i - 1].burn_block_time_iso).getTime();
                                     const currentTime = new Date(blockData.results[i].burn_block_time_iso).getTime();
                                     totalTime += (prevTime - currentTime);
                                 }
-                                const avgBlockTime = totalTime / (blockData.results.length - 1) / 1000; 
 
+                                const avgBlockTime = totalTime / (blockData.results.length - 1) / 1000;
                                 const estimatedTimeSeconds = blocksRemaining * avgBlockTime;
                                 const expirationDate = new Date(Date.now() + estimatedTimeSeconds * 1000);
                                 const formattedDate = expirationDate.toISOString().replace('T', ' ').split('.')[0];
@@ -71,8 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             .catch(() => {
                                 resultContainer.innerHTML = `<div class="result-card bg-orange-500 text-white p-4 rounded-lg">
                                     <strong>Warning:</strong> Could not fetch block data.<br>
-                                    <strong>Expiration Block:</strong> ${expireBlock}<br>
-                                    <strong>Note:</strong> Estimated expiration date not available.
+                                    <strong>Expiration Block:</strong> ${expireBlock}
                                 </div>`;
                             });
 
