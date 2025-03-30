@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Domain:</strong> ${name}<br>
                 <strong>Status:</strong> Available<br>
                 <strong>Register it:</strong> 
-                <a href="https://bns.foundation" target="_blank" class="underline text-blue-300">BNS Foundation</a>
+                <a href="https://bns.one" target="_blank" class="underline text-blue-300">BNS One</a>
                 <br><strong>Note:</strong> Domains are available for registration. Prices may vary.
             </div>`;
     }
