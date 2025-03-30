@@ -22,7 +22,7 @@ h1 {
 .description {
     max-width: 90%;
     margin: 0 auto;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #E2E8F0; /* Gris claro */
     text-align: center;
     margin-bottom: 2rem;
@@ -95,7 +95,7 @@ footer {
 @media (min-width: 768px) {
     .description {
         max-width: 50%; /* Reducimos el ancho en pantallas grandes */
-        font-size: 1rem; /* Ajustamos el tamaño de fuente */
+        font-size: 0.8rem; /* Ajustamos el tamaño de fuente */
     }
 
     h1 {
