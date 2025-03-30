@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
                                                 <strong>Domain:</strong> ${name}<br>
                                                 <strong>Address:</strong> ${data.address}<br>
-                                                <strong>Status:</strong> Occupied<br>
+                                                <strong>Status:</strong> Occupied 🔒<br>
                                                 <strong>Expiration Date:</strong> ${expirationDateText}<br>
                                                 <strong>Last Transaction:</strong> 
                                                 <a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resultContainer.innerHTML = `
             <div class="result-card bg-green-500 text-white p-4 rounded-lg">
                 <strong>Domain:</strong> ${name}<br>
-                <strong>Status:</strong> Available<br>
+                <strong>Status:</strong> Available 🔓<br>
                 <strong>Register it:</strong> 
                 <a href="https://bns.one" target="_blank" class="underline text-white">BNS One</a>
                 <br><strong>Note:</strong> Domains are available for registration. Prices may vary.
