@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.error) {
                         showAvailableDomain(name);
                     } else if (data.address) {
-                        // Buscamos la fecha de la transacción `name-register`
+                        // Buscamos el historial de transacciones de la dirección
                         fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions`)
                             .then(response => response.json())
                             .then(txHistory => {
@@ -32,15 +32,28 @@ document.addEventListener('DOMContentLoaded', function () {
                                 let registrationTx = null;
 
                                 if (txHistory.results && txHistory.results.length > 0) {
-                                    // Buscar la PRIMERA transacción con `name-register`
-                                    registrationTx = txHistory.results.find(tx => 
+                                    // 1️⃣ Buscamos primero la transacción del Airdrop
+                                    let airdropTx = txHistory.results.find(tx =>
                                         tx.contract_call &&
-                                        BNS_CONTRACTS.includes(tx.contract_call.contract_id) &&
-                                        tx.contract_call.function_name === NAME_REGISTER_FUNCTION
+                                        tx.contract_call.contract_id === "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66"
                                     );
 
-                                    if (registrationTx && registrationTx.burn_block_time) {
-                                        expirationDateText = calculateExpirationDate(registrationTx.burn_block_time);
+                                    if (airdropTx && airdropTx.burn_block_time) {
+                                        // Si recibió el Airdrop, tomamos esa fecha
+                                        expirationDateText = calculateExpirationDate(airdropTx.burn_block_time);
+                                        registrationTx = airdropTx;
+                                    } else {
+                                        // 2️⃣ Si NO recibió el Airdrop, buscamos `name-register`
+                                        let nameRegisterTx = txHistory.results.find(tx =>
+                                            tx.contract_call &&
+                                            BNS_CONTRACTS.includes(tx.contract_call.contract_id) &&
+                                            tx.contract_call.function_name === NAME_REGISTER_FUNCTION
+                                        );
+
+                                        if (nameRegisterTx && nameRegisterTx.burn_block_time) {
+                                            expirationDateText = calculateExpirationDate(nameRegisterTx.burn_block_time);
+                                            registrationTx = nameRegisterTx;
+                                        }
                                     }
                                 }
 
