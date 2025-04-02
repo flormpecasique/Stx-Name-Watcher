@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions?filter=contract_call`)
                             .then(response => response.json())
                             .then(txData => {
+                                // Mostrar la respuesta completa de las transacciones en consola para depuración
+                                console.log(txData);
+
                                 // Verificamos si txData es un arreglo
                                 if (Array.isArray(txData)) {
                                     // Filtrar transacciones relacionadas con el contrato BNS
