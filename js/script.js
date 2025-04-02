@@ -3,12 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const resultContainer = document.getElementById('result');
 
-    const BNS_CONTRACTS = [
-        "SP000000000000000000002Q6VF78.bns", // Contrato BNS principal
-        "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66" // Airdrop BNS
-    ];
-    const NAME_REGISTER_FUNCTION = "name-register";
-
     searchButton.addEventListener('click', function () {
         let name = searchInput.value.trim().toLowerCase();
 
@@ -22,44 +16,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        showAvailableDomain(name);
+                        showAvailableDomain(name); // Si no existe, se muestra como disponible
                     } else if (data.address) {
-                        // Buscamos el historial de transacciones de la dirección
-                        fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions`)
+                        // Si está ocupado, buscamos las transacciones de contrato asociadas
+                        fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions?filter=contract_call`)
                             .then(response => response.json())
-                            .then(txHistory => {
-                                let expirationDateText = "Unknown";
-                                let registrationTx = null;
+                            .then(txData => {
+                                // Filtrar transacciones relacionadas con el contrato BNS
+                                const bnsContractTx = txData.filter(tx => tx.contract_id === 'SP000000000000000000002Q6VF78.bns');
+                                
+                                // Buscar funciones de 'name-register' o 'name-update'
+                                const registerTx = bnsContractTx.find(tx => tx.function_name === 'name-register');
+                                const updateTx = bnsContractTx.find(tx => tx.function_name === 'name-update');
+                                
+                                if (registerTx || updateTx) {
+                                    // Usamos la transacción de registro o actualización
+                                    const txTime = registerTx ? registerTx.burn_block_time : updateTx.burn_block_time;
+                                    const registrationTimestamp = txTime * 1000; // Convertir a milisegundos
+                                    const expirationDate = new Date(registrationTimestamp);
+                                    expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Sumar 5 años
+                                    const expirationDateText = expirationDate.toLocaleDateString();
 
-                                if (txHistory.results && txHistory.results.length > 0) {
-                                    // 1️⃣ Buscamos primero la transacción del Airdrop
-                                    let airdropTx = txHistory.results.find(tx =>
-                                        tx.contract_call &&
-                                        tx.contract_call.contract_id === "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66"
-                                    );
-
-                                    if (airdropTx && airdropTx.burn_block_time) {
-                                        // Si recibió el Airdrop, tomamos esa fecha
-                                        expirationDateText = calculateExpirationDate(airdropTx.burn_block_time);
-                                        registrationTx = airdropTx;
-                                    } else {
-                                        // 2️⃣ Si NO recibió el Airdrop, buscamos `name-register`
-                                        let nameRegisterTx = txHistory.results.find(tx =>
-                                            tx.contract_call &&
-                                            BNS_CONTRACTS.includes(tx.contract_call.contract_id) &&
-                                            tx.contract_call.function_name === NAME_REGISTER_FUNCTION
-                                        );
-
-                                        if (nameRegisterTx && nameRegisterTx.burn_block_time) {
-                                            expirationDateText = calculateExpirationDate(nameRegisterTx.burn_block_time);
-                                            registrationTx = nameRegisterTx;
-                                        }
-                                    }
+                                    resultContainer.innerHTML = `
+                                        <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
+                                            <strong>Domain:</strong> ${name}<br>
+                                            <strong>Status:</strong> Occupied ✖️<br>
+                                            <strong>Expiration Date:</strong> ${expirationDateText}<br>
+                                            <strong>Registration Transaction:</strong> 
+                                            <a href="https://explorer.stacks.co/txid/${registerTx.txid}" target="_blank">View on explorer</a>
+                                        </div>`;
+                                } else {
+                                    showUnknownExpiration(data, name);
                                 }
-
-                                showOccupiedDomain(data, name, expirationDateText, registrationTx ? registrationTx.tx_id : null);
                             })
-                            .catch(error => showUnknownExpiration(data, name));
+                            .catch(error => {
+                                resultContainer.innerHTML = `
+                                    <div class="result-card bg-red-500 text-white p-4 rounded-lg">
+                                        <strong>Error:</strong> ${error.message}. Please try again later.
+                                    </div>`;
+                            });
                     }
                 })
                 .catch(error => showError(error.message));
@@ -77,33 +72,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function calculateExpirationDate(blockTime) {
-        const registrationTimestamp = blockTime * 1000; // Convertimos a milisegundos
-        let expirationDate = new Date(registrationTimestamp);
-        expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Agregamos 5 años
-        return expirationDate.toLocaleDateString();
-    }
-
     function showAvailableDomain(name) {
         resultContainer.innerHTML = `
             <div class="result-card bg-green-500 text-white p-4 rounded-lg">
                 <strong>Domain:</strong> ${name}<br>
                 <strong>Status:</strong> Available 🥳<br>
                 <strong>Register it:</strong> 
-                <a href="https://bns.foundation" target="_blank" class="underline text-white">BNS Foundation</a>
+                <a href="https://bns.one" target="_blank" class="underline text-white">BNS One</a>
                 <br><strong>Note:</strong> Domains are available for registration. Prices may vary.
-            </div>`;
-    }
-
-    function showOccupiedDomain(data, name, expirationDateText, txid) {
-        resultContainer.innerHTML = `
-            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                <strong>Domain:</strong> ${name}<br>
-                <strong>Address:</strong> ${data.address}<br>
-                <strong>Status:</strong> Occupied ✖️<br>
-                <strong>Expiration Date:</strong> ${expirationDateText}<br>
-                <strong>Registration Transaction:</strong> 
-                ${txid ? `<a href="https://explorer.stacks.co/txid/${txid}" target="_blank" class="underline text-blue-300">View on explorer</a>` : 'Not available'}
             </div>`;
     }
 
