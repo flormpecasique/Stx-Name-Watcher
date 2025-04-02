@@ -3,7 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const resultContainer = document.getElementById('result');
 
-    const AIRDROP_CONTRACT = "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66"; // Contrato del airdrop BNS
+    const BNS_CONTRACTS = [
+        "SP000000000000000000002Q6VF78.bns", // Contrato BNS principal
+        "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66" // Airdrop BNS
+    ];
+    const NAME_REGISTER_FUNCTION = "name-register";
 
     searchButton.addEventListener('click', function () {
         let name = searchInput.value.trim().toLowerCase();
@@ -20,30 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.error) {
                         showAvailableDomain(name);
                     } else if (data.address) {
-                        // Consultamos historial de transacciones de la dirección
+                        // Buscamos la fecha de la transacción `name-register`
                         fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions`)
                             .then(response => response.json())
                             .then(txHistory => {
                                 let expirationDateText = "Unknown";
-                                let lastTransactionId = null;
+                                let registrationTx = null;
 
                                 if (txHistory.results && txHistory.results.length > 0) {
-                                    let airdropTransaction = txHistory.results.find(tx => 
-                                        tx.contract_call && tx.contract_call.contract_id === AIRDROP_CONTRACT
+                                    // Buscar la PRIMERA transacción con `name-register`
+                                    registrationTx = txHistory.results.find(tx => 
+                                        tx.contract_call &&
+                                        BNS_CONTRACTS.includes(tx.contract_call.contract_id) &&
+                                        tx.contract_call.function_name === NAME_REGISTER_FUNCTION
                                     );
 
-                                    let lastTransaction = txHistory.results[0]; // Última transacción registrada
-
-                                    if (airdropTransaction) {
-                                        lastTransactionId = airdropTransaction.tx_id;
-                                        expirationDateText = calculateExpirationDate(airdropTransaction.burn_block_time);
-                                    } else if (lastTransaction && lastTransaction.burn_block_time) {
-                                        lastTransactionId = lastTransaction.tx_id;
-                                        expirationDateText = calculateExpirationDate(lastTransaction.burn_block_time);
+                                    if (registrationTx && registrationTx.burn_block_time) {
+                                        expirationDateText = calculateExpirationDate(registrationTx.burn_block_time);
                                     }
                                 }
 
-                                showOccupiedDomain(data, name, expirationDateText, lastTransactionId);
+                                showOccupiedDomain(data, name, expirationDateText, registrationTx ? registrationTx.tx_id : null);
                             })
                             .catch(error => showUnknownExpiration(data, name));
                     }
@@ -88,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Address:</strong> ${data.address}<br>
                 <strong>Status:</strong> Occupied ✖️<br>
                 <strong>Expiration Date:</strong> ${expirationDateText}<br>
-                <strong>Last Transaction:</strong> 
+                <strong>Registration Transaction:</strong> 
                 ${txid ? `<a href="https://explorer.stacks.co/txid/${txid}" target="_blank" class="underline text-blue-300">View on explorer</a>` : 'Not available'}
             </div>`;
     }
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Address:</strong> ${data.address}<br>
                 <strong>Status:</strong> Occupied<br>
                 <strong>Expiration Date:</strong> Unknown<br>
-                <strong>Last Transaction:</strong> Not available
+                <strong>Registration Transaction:</strong> Not available
             </div>`;
     }
 
