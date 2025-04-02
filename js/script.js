@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
     const resultContainer = document.getElementById('result');
 
+    const AIRDROP_CONTRACT = "SP2QEZ06AGJ3RKJPBV14SY1V5BBFNAW33D96YPGZF.standard-owner-name-aidrop-66"; // Contrato del airdrop BNS
+
     searchButton.addEventListener('click', function () {
         let name = searchInput.value.trim().toLowerCase();
 
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        showAvailableDomain(name); // Si no existe, se muestra como disponible
+                        showAvailableDomain(name);
                     } else if (data.address) {
                         // Si está ocupado, verificamos su última transacción
                         if (data.last_txid) {
@@ -25,20 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                 .then(txData => {
                                     if (txData.burn_block_time) {
                                         const registrationTimestamp = txData.burn_block_time * 1000; // Convertimos a milisegundos
-                                        const expirationDate = new Date(registrationTimestamp);
-                                        expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Sumamos 5 años
-                                        const expirationDateText = expirationDate.toLocaleDateString();
+                                        let expirationDate = new Date(registrationTimestamp);
 
-                                        // Mostramos los datos del dominio con fecha de expiración
-                                        resultContainer.innerHTML = `
-                                            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
-                                                <strong>Domain:</strong> ${name}<br>
-                                                <strong>Address:</strong> ${data.address}<br>
-                                                <strong>Status:</strong> Occupied ✖️<br>
-                                                <strong>Expiration Date:</strong> ${expirationDateText}<br>
-                                                <strong>Last Transaction:</strong> 
-                                                <a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>
-                                            </div>`;
+                                        // Si la transacción pertenece al contrato del Airdrop, tomamos esa fecha + 5 años
+                                        if (txData.contract_call && txData.contract_call.contract_id === AIRDROP_CONTRACT) {
+                                            expirationDate.setFullYear(expirationDate.getFullYear() + 5);
+                                        } else {
+                                            // Si no es del airdrop, sumamos 5 años a la fecha de registro
+                                            expirationDate.setFullYear(expirationDate.getFullYear() + 5);
+                                        }
+
+                                        const expirationDateText = expirationDate.toLocaleDateString();
+                                        showOccupiedDomain(data, name, expirationDateText, data.last_txid);
                                     } else {
                                         showUnknownExpiration(data, name);
                                     }
@@ -70,8 +70,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Domain:</strong> ${name}<br>
                 <strong>Status:</strong> Available 🥳<br>
                 <strong>Register it:</strong> 
-                <a href="https://bns.one" target="_blank" class="underline text-white">BNS One</a>
+                <a href="https://bns.foundation" target="_blank" class="underline text-white">BNS Foundation</a>
                 <br><strong>Note:</strong> Domains are available for registration. Prices may vary.
+            </div>`;
+    }
+
+    function showOccupiedDomain(data, name, expirationDateText, txid) {
+        resultContainer.innerHTML = `
+            <div class="result-card bg-yellow-500 text-white p-4 rounded-lg">
+                <strong>Domain:</strong> ${name}<br>
+                <strong>Address:</strong> ${data.address}<br>
+                <strong>Status:</strong> Occupied ✖️<br>
+                <strong>Expiration Date:</strong> ${expirationDateText}<br>
+                <strong>Last Transaction:</strong> 
+                <a href="https://explorer.stacks.co/txid/${txid}" target="_blank" class="underline text-blue-300">View on explorer</a>
             </div>`;
     }
 
@@ -83,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Status:</strong> Occupied<br>
                 <strong>Expiration Date:</strong> Unknown<br>
                 <strong>Last Transaction:</strong> 
-                ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank">View on explorer</a>` : 'Not available'}
+                ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank" class="underline text-blue-300">View on explorer</a>` : 'Not available'}
             </div>`;
     }
 
