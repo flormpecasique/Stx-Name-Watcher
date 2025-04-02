@@ -20,33 +20,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.error) {
                         showAvailableDomain(name);
                     } else if (data.address) {
-                        // Si está ocupado, verificamos su última transacción
-                        if (data.last_txid) {
-                            fetch(`https://api.hiro.so/extended/v1/tx/${data.last_txid}`)
-                                .then(response => response.json())
-                                .then(txData => {
-                                    if (txData.burn_block_time) {
-                                        const registrationTimestamp = txData.burn_block_time * 1000; // Convertimos a milisegundos
-                                        let expirationDate = new Date(registrationTimestamp);
+                        // Consultamos historial de transacciones de la dirección
+                        fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions`)
+                            .then(response => response.json())
+                            .then(txHistory => {
+                                let expirationDateText = "Unknown";
+                                let lastTransactionId = null;
 
-                                        // Si la transacción pertenece al contrato del Airdrop, tomamos esa fecha + 5 años
-                                        if (txData.contract_call && txData.contract_call.contract_id === AIRDROP_CONTRACT) {
-                                            expirationDate.setFullYear(expirationDate.getFullYear() + 5);
-                                        } else {
-                                            // Si no es del airdrop, sumamos 5 años a la fecha de registro
-                                            expirationDate.setFullYear(expirationDate.getFullYear() + 5);
-                                        }
+                                if (txHistory.results && txHistory.results.length > 0) {
+                                    let airdropTransaction = txHistory.results.find(tx => 
+                                        tx.contract_call && tx.contract_call.contract_id === AIRDROP_CONTRACT
+                                    );
 
-                                        const expirationDateText = expirationDate.toLocaleDateString();
-                                        showOccupiedDomain(data, name, expirationDateText, data.last_txid);
-                                    } else {
-                                        showUnknownExpiration(data, name);
+                                    let lastTransaction = txHistory.results[0]; // Última transacción registrada
+
+                                    if (airdropTransaction) {
+                                        lastTransactionId = airdropTransaction.tx_id;
+                                        expirationDateText = calculateExpirationDate(airdropTransaction.burn_block_time);
+                                    } else if (lastTransaction && lastTransaction.burn_block_time) {
+                                        lastTransactionId = lastTransaction.tx_id;
+                                        expirationDateText = calculateExpirationDate(lastTransaction.burn_block_time);
                                     }
-                                })
-                                .catch(error => showUnknownExpiration(data, name));
-                        } else {
-                            showUnknownExpiration(data, name);
-                        }
+                                }
+
+                                showOccupiedDomain(data, name, expirationDateText, lastTransactionId);
+                            })
+                            .catch(error => showUnknownExpiration(data, name));
                     }
                 })
                 .catch(error => showError(error.message));
@@ -63,6 +62,13 @@ document.addEventListener('DOMContentLoaded', function () {
             searchButton.click();
         }
     });
+
+    function calculateExpirationDate(blockTime) {
+        const registrationTimestamp = blockTime * 1000; // Convertimos a milisegundos
+        let expirationDate = new Date(registrationTimestamp);
+        expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Agregamos 5 años
+        return expirationDate.toLocaleDateString();
+    }
 
     function showAvailableDomain(name) {
         resultContainer.innerHTML = `
@@ -83,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Status:</strong> Occupied ✖️<br>
                 <strong>Expiration Date:</strong> ${expirationDateText}<br>
                 <strong>Last Transaction:</strong> 
-                <a href="https://explorer.stacks.co/txid/${txid}" target="_blank" class="underline text-blue-300">View on explorer</a>
+                ${txid ? `<a href="https://explorer.stacks.co/txid/${txid}" target="_blank" class="underline text-blue-300">View on explorer</a>` : 'Not available'}
             </div>`;
     }
 
@@ -94,8 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <strong>Address:</strong> ${data.address}<br>
                 <strong>Status:</strong> Occupied<br>
                 <strong>Expiration Date:</strong> Unknown<br>
-                <strong>Last Transaction:</strong> 
-                ${data.last_txid ? `<a href="https://explorer.stacks.co/txid/${data.last_txid}" target="_blank" class="underline text-blue-300">View on explorer</a>` : 'Not available'}
+                <strong>Last Transaction:</strong> Not available
             </div>`;
     }
 
