@@ -11,35 +11,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 name += '.btc';
             }
 
-            // Consultamos la API de Hiro para obtener los detalles del dominio
             fetch(`https://api.hiro.so/v1/names/${name}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        showAvailableDomain(name); // Si no existe, se muestra como disponible
+                        showAvailableDomain(name);
                     } else if (data.address) {
-                        // Si está ocupado, buscamos las transacciones de contrato asociadas
-                        fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions?filter=contract_call`)
+                        fetch(`https://api.hiro.so/extended/v1/address/${data.address}/transactions?limit=50`)
                             .then(response => response.json())
                             .then(txData => {
-                                // Mostrar la respuesta completa de las transacciones en consola para depuración
                                 console.log(txData);
 
-                                // Verificamos si txData tiene un array de resultados
-                                if (txData.results && Array.isArray(txData.results)) {
-                                    // Filtrar transacciones relacionadas con el contrato BNS
-                                    const bnsContractTx = txData.results.filter(tx => tx.contract_id === 'SP000000000000000000002Q6VF78.bns');
+                                if (txData && txData.results && Array.isArray(txData.results)) {
+                                    const bnsContractTx = txData.results.filter(tx => tx.contract_call && tx.contract_call.contract_id.includes('bns'));
                                     
-                                    // Buscar funciones de 'name-register' o 'name-update'
-                                    const registerTx = bnsContractTx.find(tx => tx.function_name === 'name-register');
-                                    const updateTx = bnsContractTx.find(tx => tx.function_name === 'name-update');
+                                    const registerTx = bnsContractTx.find(tx => tx.contract_call.function_name === 'name-register');
+                                    const updateTx = bnsContractTx.find(tx => tx.contract_call.function_name === 'name-update');
                                     
                                     if (registerTx || updateTx) {
-                                        // Usamos la transacción de registro o actualización
                                         const txTime = registerTx ? registerTx.burn_block_time : updateTx.burn_block_time;
-                                        const registrationTimestamp = txTime * 1000; // Convertir a milisegundos
+                                        const registrationTimestamp = txTime * 1000;
                                         const expirationDate = new Date(registrationTimestamp);
-                                        expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Sumar 5 años
+                                        expirationDate.setFullYear(expirationDate.getFullYear() + 5);
                                         const expirationDateText = expirationDate.toLocaleDateString();
 
                                         resultContainer.innerHTML = `
@@ -48,14 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <strong>Status:</strong> Occupied ✖️<br>
                                                 <strong>Expiration Date:</strong> ${expirationDateText}<br>
                                                 <strong>Registration Transaction:</strong> 
-                                                <a href="https://explorer.stacks.co/txid/${registerTx ? registerTx.txid : updateTx.txid}" target="_blank">View on explorer</a>
+                                                <a href="https://explorer.stacks.co/txid/${registerTx ? registerTx.tx_id : updateTx.tx_id}" target="_blank">View on explorer</a>
                                             </div>`;
                                     } else {
                                         showUnknownExpiration(data, name);
                                     }
                                 } else {
-                                    // Si txData no tiene resultados, mostrar un mensaje de error
-                                    showError("Error: The transaction data is not in the expected format.");
+                                    showError("Error: The transaction data format is incorrect.");
                                 }
                             })
                             .catch(error => {
