@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // Mostrar la respuesta completa de las transacciones en consola para depuración
                                 console.log(txData);
 
-                                // Verificamos si txData es un arreglo
-                                if (Array.isArray(txData)) {
+                                // Verificamos si txData tiene un array de resultados
+                                if (txData.results && Array.isArray(txData.results)) {
                                     // Filtrar transacciones relacionadas con el contrato BNS
-                                    const bnsContractTx = txData.filter(tx => tx.contract_id === 'SP000000000000000000002Q6VF78.bns');
+                                    const bnsContractTx = txData.results.filter(tx => tx.contract_id === 'SP000000000000000000002Q6VF78.bns');
                                     
                                     // Buscar funciones de 'name-register' o 'name-update'
                                     const registerTx = bnsContractTx.find(tx => tx.function_name === 'name-register');
@@ -48,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <strong>Status:</strong> Occupied ✖️<br>
                                                 <strong>Expiration Date:</strong> ${expirationDateText}<br>
                                                 <strong>Registration Transaction:</strong> 
-                                                <a href="https://explorer.stacks.co/txid/${registerTx.txid}" target="_blank">View on explorer</a>
+                                                <a href="https://explorer.stacks.co/txid/${registerTx ? registerTx.txid : updateTx.txid}" target="_blank">View on explorer</a>
                                             </div>`;
                                     } else {
                                         showUnknownExpiration(data, name);
                                     }
                                 } else {
-                                    // Si txData no es un arreglo, mostrar un mensaje de error
-                                    showError("Error: The transaction data is not in expected format.");
+                                    // Si txData no tiene resultados, mostrar un mensaje de error
+                                    showError("Error: The transaction data is not in the expected format.");
                                 }
                             })
                             .catch(error => {
